@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Page</title>
+    <link rel="stylesheet" href="">
+</head>
+<body>
+<h1>My Page</h1>
+
+<div id="user-info">
+    <h2>Edit Personal Information</h2>
+    <form id="edit-info-form" action="/Backend/mypage.php?action=updateUserInfo" method="post">
+        <input type="hidden" id="id" name="id" value=""> <!-- Kullanıcı ID'nizi buraya girin -->
+        <input type="text" id="name" name="name" placeholder="Name">
+        <input type="text" id="firstname" name="firstname" placeholder="first Name">
+        <input type="text" id="company_name" name="company_name" placeholder="Company Name">
+        <input type="email" id="email" name="email" placeholder="Email">
+        <input type="text" id="phone" name="phone" placeholder="Phone">
+        <input type="text" id="street" name="street" placeholder="Street">
+        <input type="text" id="building_number" name="building_number" placeholder="Building Number">
+        <input type="text" id="postal_code" name="postal_code" placeholder="Postal Code">
+        <input type="text" id="city" name="city" placeholder="City">
+        <input type="text" id="canton" name="canton" placeholder="Canton">
+        <input type ="password" id="password" name="password" placeholder="new password">
+        <button type="submit">Save Changes</button>
+    </form>
+</div>
+
+<div id="post-ad">
+    <h2>Post an Ad</h2>
+    <form id="post-ad-form" action="/Backend/mypage.php?action=postAd" method="post" enctype="multipart/form-data">
+        <input type="text" id="title" name="title" placeholder="Ad Title">
+        <textarea id="situation" name="situation" placeholder="situation"></textarea>
+        <!--categories-->
+        <select id="category" name="category">
+            <option value="1"> fruits</option>
+            <option value="2"> legumes</option>
+            <option value="3"> others</option>
+        </select> <br>
+        product name: <input type="text" id="prdct_name" name="prdct_name" placeholder="Ürün Adı"><br>
+        price: <input type="number" id="price" name="price"><br>
+        Stock: <input type="number" id="stock" name="stock"><br>
+        images: <input type="file" id="photoUrl" name="url[]" multiple><br>
+        <input type="hidden" id="userStreet" name="userStreet" value="">
+        <input type="hidden" id="userBuildingNumber" name="userBuildingNumber" value="">
+        <input type="hidden" id="userPostalCode" name="userPostalCode" value="">
+        <input type="hidden" id="userCity" name="userCity" value="">
+        <input type="hidden" id="userCanton" name="userCanton" value="">
+
+        <button type="submit">Post Ad</button>
+    </form>
+</div>
+<!-- İlan Listeleme Bölümü -->
+<h2>Ads List</h2>
+<ul id="adsList" >
+    <!--  js -->
+
+    <!-- İlanlar burada listelenecek -->
+</ul>
+
+
+
+<script src="mypage.js"></script>
+</body>
+</html>

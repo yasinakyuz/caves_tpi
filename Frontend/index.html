@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Caves</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v8.2.0/ol.css">
+
+    <script src='https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.css' rel='stylesheet'/>
+
+
+</head>
+<body>
+    <div id=" navbar">
+        <div id="navbar-items">
+            <div id="logo">LOGO</div>
+            <div id="navbar-right">
+                <button id="login-btn">Login</button>
+                <div id="login-popup" class="popup-background">
+                    <div class="popup-container">
+                        <span class="close">&times;</span>
+                        <h2 class="popup-title">Login</h2>
+                        <form class="popup-form" id="login-form" action="/Backend/login.php" method="post">
+                            <label for="login-email">E-mail</label>
+                            <input type="email" id="login-email" name="email" placeholder="E-mail" required>
+                            <label for="login-password">Password</label>
+                            <input type="password" id="login-password" name="password" placeholder="Password" required>
+                            <input type="submit" value="Login">
+                        </form>
+                    </div>
+                </div>
+                <button id="subscribe">Subscribe</button>
+                <div id="subscribe-popup" class="popup-background">
+                    <div class="popup-container">
+                        <h2 class="popup-title">Subscribe</h2>
+                        <form class="popup-form" id="subscribe-form" action="/Backend/subscribe.php" method="post">
+                            <input type="text" id="company-name" name="company" placeholder="Nom de l'entreprise (facultatif)">
+                            <input type="text" id="last-name" name="lastname" placeholder="Name">
+                            <input type="text" id="first-name" name="firstname" placeholder="Firstname">
+                            <input type="email" id="email" name="email" placeholder="E mail">
+                            <input type="text" id="phone" name="phone" placeholder="Numéro de téléphone">
+                            <input type="text" id="address" name="address" placeholder="Adresse ">
+                            <input type="text" id="no" name="no" placeholder="Numéro du bâtiment ">
+                            <input type="text" id="zip" name="zip" placeholder="Code postal">
+                            <input type="text" id="city" name="city" placeholder="Ville">
+                            <input type="text" id="state" name="canton" placeholder="Canton">
+                            <input type="password" id="password" name="password" placeholder="Le mot de passe">
+                            <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirmez le mot de passe">
+                            <button type="submit">Subscribe</button> <br> <br>
+                            <button type="submit">Login</button>
+                        </form>
+                    </div>
+                </div>
+                <form id="search-form">
+                    <input type="text" id="search-input" placeholder="write here" />
+                    <button type="submit" id="search-btn">search</button>
+                </form>
+
+                <button id="logout-btn" style="display: none"> Logout </button>
+                <button id="messages-btn" style="display: none"> Messages</button>
+                <button id="filter-btn" style="display: none"> Filter</button>
+                <a href ="mypage.html">
+                    <button id="mypage-btn" style="display: none"> MyPage</button>
+                </a>
+
+            </div>
+        </div>
+    </div>
+    <!-- Filtreleme için Popup Form -->
+    <div id="filter-popup" style="display:none; position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; z-index: 1000; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.5);">
+        <h2>Filter Ads</h2>
+        <form id="filter-form">
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title">
+            <br>
+            <button type="submit">Apply Filter</button>
+            <button type="button" onclick="document.getElementById('filter-popup').style.display='none'">Close</button>
+        </form>
+    </div>
+
+
+    <div id="main-content">
+        <div id = "map"> map area</div>
+        <script>
+            mapboxgl.accessToken = 'pk.eyJ1IjoieWFzaW5ha3l1eiIsImEiOiJjbHRjcHh4bXowMm40MmtvOXJtdDRzMml1In0.sT1voDiQUrkzAx8bAjPKvw';
+            const map = new mapboxgl.Map({
+                container: 'map',
+                // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
+                style: 'mapbox://styles/mapbox/streets-v12',
+                center: [8.2275, 46.8182],
+                zoom: 7
+            });
+
+            // İlanları yüklemek için bir fonksiyon
+            map.on('load', function() {
+
+                fetch('/Backend/accueil.php') // PHP betiğinizin URL'si
+                    .then(response => response.json())
+                    .then(data => {
+                        data.ads.forEach(ad => {
+
+                            // Adresi koordinatlara çevir ve haritada işaretleyici oluştur
+                            const query = encodeURIComponent(`${ad.street} ${ad.building_number}, ${ad.postal_code} ${ad.city}, ${ad.canton}`);
+                            fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?access_token=${mapboxgl.accessToken}&limit=1`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.features.length > 0) {
+                                        const coordinates = data.features[0].center;
+                                        const descriptionHTML = `
+                                            <div class="popup-content"  onclick="location.href='ad.html?id=${ad.id}'" style="background-image: url('${ad.photo_url}');">
+                                                <h3>${ad.title}</h3>
+                                                <!-- <img src="${ad.photo_url}" alt="Ad Image">-->
+                                                <p>Product: ${ad.product_name}</p>
+                                                <p>Price: ${ad.product_price}</p>
+                                                <p>Stock: ${ad.product_stock}</p>
+                                                <p>Address: ${address}</p>
+                                                <p>Created on: ${new Date(ad.creation_date).toLocaleDateString()}</p>
+                                            </div>
+                                        `;
+
+                                        new mapboxgl.Marker()
+                                            .setLngLat(coordinates)
+                                            .setPopup(new mapboxgl.Popup({offset: 25}).setHTML(descriptionHTML))
+                                            .addTo(map);
+                                    }
+                                });
+                        });
+                    })
+                    .catch(error => console.error('Error:', error));
+                    showUserAddressOnMap();
+            });
+        </script>
+    </div>
+
+    <div id = "advertisements">
+        <button class="scroll-btn" onclick="scrollAds('left')" >&#10094</button>
+        <div id="ads-container">
+            <!--
+            <div class="ad">ads1</div>
+            <div class="ad">ads1</div>
+            <div class="ad">ads1</div>
+            plus-->
+        </div>
+
+        <button class="scroll-btn" onclick="scrollAds('right')">&#10095</button>
+    </div>
+
+
+    <footer>
+        <button class="nav-btn">Accueil</button>
+        <button class="nav-btn">Propos</button>
+        <button class="nav-btn">Contact</button>
+    </footer>
+
+
+<script src="user_en_map.js"></script>
+<script src="map.js"></script>
+<script src="script.js"></script>
+<script src="accueil.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ol@v8.2.0/dist/ol.js"></script>
+
+</body>
+</html>
