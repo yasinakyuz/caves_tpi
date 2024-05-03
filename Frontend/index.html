@@ -119,10 +119,11 @@
                                             </div>
                                         `;
 
-                                        new mapboxgl.Marker()
+                                        const newMarker = new mapboxgl.Marker()
                                             .setLngLat(coordinates)
                                             .setPopup(new mapboxgl.Popup({offset: 25}).setHTML(descriptionHTML))
                                             .addTo(map);
+                                        markers.push(newMarker);
                                     }
                                 });
                         });
