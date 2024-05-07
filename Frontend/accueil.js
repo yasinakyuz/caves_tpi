@@ -7,11 +7,19 @@ document.getElementById('filter-form').addEventListener('submit', async function
     e.preventDefault();
     // Filtreleme kriterlerini al
     const title = document.getElementById('title').value;
-    fetchAdsFiltered({ title: title })
+    const categoryName = document.getElementById('name_category').value;
+    const minPrice = document.getElementById('min-price').value;
+    const maxPrice = document.getElementById('max-price').value;
+    await fetchAdsFiltered({
+        title: title,
+        name_category: categoryName,
+        min_price : minPrice,
+        max_price : maxPrice
+    });
     //const city = document.getElementById('city').value;
-
     // Filtreleme kriterlerine göre ilanları getir
-    //await fetchAdsFiltered(title);
+    //await fetchAdsFiltered({
+    // title);
 });
 
 

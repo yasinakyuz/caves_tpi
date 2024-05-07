@@ -1,3 +1,10 @@
+/**
+* @file         dbConnector.php
+* @brief        this file is designed to
+* @author       Created by YSA
+* @version      01.05.2024
+*/
+
 <?php
 header('Access-Control-Allow-Origin: *');
 function openDBConnection(){

@@ -3,7 +3,7 @@
  * @file         subscribe.php
  * @brief        this file is designed to
  * @author       Created by YSA
- * @version      07.02.2024
+ * @version      01.05.2024
  */
 
 header('Access-Control-Allow-Origin: *');
