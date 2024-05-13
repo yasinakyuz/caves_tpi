@@ -11,9 +11,13 @@ function checkLoginState() {
     if (isLoggedIn) {
         document.getElementById('login-btn').style.display = 'none';
         document.getElementById('logout-btn').style.display = 'block';
+
+
     } else {
         document.getElementById('login-btn').style.display = 'block';
         document.getElementById('logout-btn').style.display = 'none';
+
+
     }
 }
 
@@ -61,12 +65,12 @@ function closeLoginPopup() {
 // 'login' butonu için event listener
 document.getElementById('login-btn').addEventListener('click', showLoginPopup);
 
-// Close işlemleri için mevcut fonksiyonlarına benzer şekilde login popup için de ayarlayın
+// Close işlemleri için mevcut fonksiyonlarına benzer şekilde login popup için
 var closeButtons = document.getElementsByClassName("close");
 for(var i = 0; i < closeButtons.length; i++) {
     closeButtons[i].addEventListener('click', function() {
         closeLoginPopup();
-        closePopup(); // Eğer her iki popup için aynı kapatma butonunu kullanıyorsanız
+        closePopup(); // Eğer her iki popup için aynı kapatma butonunu
     });
 }
 
@@ -116,8 +120,6 @@ fetch('/Backend/subscribe.php', {
     method: 'POST',
     body: new FormData(document.getElementById('subscribe-form'))
 })
-
-
 //let userMarker = null; // Initialize to null to manage its state globally
 //login
 document.getElementById('login-form').addEventListener('submit', function(event) {
@@ -145,6 +147,8 @@ function loginuser(email, password) {
             document.getElementById('filter-btn').style.display = 'block';
             document.getElementById('mypage-btn').style.display = 'block';
 
+            sessionStorage.setItem('isLoggedIn', true);
+
             //localStorage.setItem('isLoggedIn', 'true');
             console.log('Login successful');
 
@@ -159,13 +163,11 @@ function loginuser(email, password) {
     });
 }
 
-
-
 //logout
-
 document.getElementById('logout-btn').addEventListener('click', logoutuser);
 
 function logoutuser(){
+    sessionStorage.setItem('isLoggedIn', false);
     fetch('/Backend/logout.php',{
         method:'POST'
     })
@@ -181,7 +183,6 @@ function logoutuser(){
         console.error('Error:', error);
     })
 }
-
 
 // ana sayfada ki ilanlari gosterir.
 document.addEventListener('DOMContentLoaded', () => {

@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <title>Détails de l'annonce</title>
     <link rel="stylesheet" href="messages_panel.css">
+    <link rel="stylesheet" href="panier.css">
+
+
 </head>
 <body>
 <div id="ad-container">
@@ -15,25 +18,28 @@
     <p id="ad_stock"></p>
     <p id="ad_address"></p>
     <p id="ad_creation_date"></p>
-    <button id="message-seller">Messages</button>
-    <button id="add-to-cart">Panier</button>
+    <button id="message-seller" style="display: none">Messages</button>
+    <button id="add-to-cart" style="display: none" onclick="addToCart()">Add To Cart</button>
+    <button id="panier-button" style="display: none">Panier</button>
 </div>
-
+<!--
 <div id="messaging-panel" class="hidden">
     <div class="chat-header">
         <h2 id="chat-title">Chat with Seller</h2>
     </div>
     <div id="messages-container">
-        <!-- Messages will be appended here -->
+         Messages will be appended here
     </div>
     <div class="chat-input">
         <input type="text" id="message-input" placeholder="Type a message...">
         <button onclick="sendMessage()">Send</button>
     </div>
 </div>
+-->
 
-
+<script src="panier.js"></script>
 <script src="ad.js"></script>
+
 
 </body>
 </html>
