@@ -19,6 +19,8 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('ad_address').textContent = `Address: ${ad.street} ${ad.building_number}, ${ad.postal_code} ${ad.city}, ${ad.canton}`;
             document.getElementById('ad_creation_date').textContent = `Creation Date: ${new Date(ad.creation_date).toLocaleDateString()}`;
 
+            document.getElementById('add-to-cart-btn').dataset.productId = adId;
+
             updateButtonVisibility(); // Giriş kontrolü ve butonları güncelle
 
             // Mesaj Gönder Butonu
@@ -27,9 +29,9 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             // Sepete Ekle Butonu
-            document.getElementById('add-to-cart').addEventListener('click', function() {
+            document.getElementById('add-to-cart-btn').addEventListener('click', function() {
                 addToCart(adId);
-                alert("Ürün sepete eklendi!");
+                //alert("Ürün sepete eklendi!");
             });
 
             // Sepetim Butonu
@@ -48,7 +50,7 @@ function updateButtonVisibility() {
     console.log('Updating button visibility...');
     let isLoggedIn = sessionStorage.getItem('isLoggedIn');
     console.log('Logged in:', typeof(isLoggedIn));
-    const buttonsToShow = ['message-seller', 'add-to-cart', 'panier-button'];
+    const buttonsToShow = ['message-seller', 'add-to-cart-btn', 'panier-button'];
 
     buttonsToShow.forEach(buttonId => {
         const button = document.getElementById(buttonId);
@@ -63,48 +65,47 @@ function updateButtonVisibility() {
         }
     })
 }
-/*
-function initializeCartCount() {
-    if (!localStorage.getItem('cartCount')) {
-        localStorage.setItem('cartCount', 0);
-    }
-    updateCartCount();
-}
 
 function addToCart(productId) {
-    let count = parseInt(localStorage.getItem('cartCount'), 10);
-    count++;
-    localStorage.setItem('cartCount', count);
-    updateCartCount();
-    alert("Product added to cart!");
+    const quantity = document.getElementById('product-quantity') ? document.getElementById('product-quantity').value : 1; // product-quantity öğesi bulunamazsa varsayılan olarak 1 ekle // Örnek olarak 1 adet ekleniyor
+    fetch('/Backend/panier.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `action=add&product_id=${productId}&quantity=${quantity}`
+    })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                alert(result.success);
+            } else {
+                alert(result.error);
+            }
+        });
 }
-
-function updateCartCount() {
-    const count = localStorage.getItem('cartCount');
-    document.getElementById('panier-button').textContent = `Panier (${count})`;
-}
-/*
-function initializeCart() {
-    if (!localStorage.getItem('cartCount')) {
-        localStorage.setItem('cartCount', '0');
-    }
-}
-
-function updateCartCount() {
-    const count = localStorage.getItem('cartCount');
-    document.getElementById('panier-button').textContent = `Panier (${count})`;
-}
-function addToCart() {
-    let currentCount = parseInt(localStorage.getItem('cartCount'), 10);
-    currentCount += 1; // Increment the count
-    localStorage.setItem('cartCount', currentCount.toString()); // Store the new count
-    updateCartCount(); // Update the display
-    alert("Product added to cart!");
-}
-
 
 /*
+function addToCart(productId) {
+    const quantity = 1; // Örnek olarak 1 adet ekleniyor
+    fetch('/Backend/panier.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `action=add&product_id=${productId}&quantity=${quantity}`
+    })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                alert(result.success);
+            } else {
+                alert(result.error);
+            }
+        });
+}
 
+/*
 //messages
 function toggleMessages() {
     var panel = document.getElementById('messaging-panel');
