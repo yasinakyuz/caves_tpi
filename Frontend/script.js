@@ -167,6 +167,7 @@ function loginuser(email, password) {
 document.getElementById('logout-btn').addEventListener('click', logoutuser);
 
 function logoutuser(){
+    sessionStorage.clear();
     sessionStorage.setItem('isLoggedIn', false);
     fetch('/Backend/logout.php',{
         method:'POST'
@@ -176,8 +177,11 @@ function logoutuser(){
         if (userMarker) {
             userMarker.remove();
         }
-        //reload the exit succesful page
+
+        sessionStorage.clear();
+        //sepete eklenen ilanlari da session storege ile kaldirmak icin
         window.location.reload()
+        //window.location.href = 'index.html';
     })
     .catch(error => {
         console.error('Error:', error);

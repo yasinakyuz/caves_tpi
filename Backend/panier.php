@@ -10,11 +10,84 @@ header('Access-Control-Allow-Origin: *');
 session_start();
 require 'dbConnector.php';
 $pdo = openDBConnection();
+// addToCart.php
+session_start();
+
+
+
+$productId = $_POST['product_id'];
+$quantity = $_POST['quantity'];
+
+// Stokları kontrol et ve rezerve et
+$sql = "SELECT stock FROM products WHERE id = :productId";
+$stmt = $pdo->prepare($sql);
+$stmt->execute(['productId' => $productId]);
+$product = $stmt->fetch();
+
+if ($product && $product['stock'] >= $quantity) {
+    // Stok yeterli ise rezerve et
+    $newStock = $product['stock'] - $quantity;
+    $updateSql = "UPDATE products SET reserved_stock = :newStock WHERE id = :productId";
+    $updateStmt = $pdo->prepare($updateSql);
+    $updateStmt->execute(['newStock' => $newStock, 'productId' => $productId]);
+
+    // Sepete ekle
+    $_SESSION['cart'][$productId] = ['quantity' => $quantity, 'timeout' => time() + 300]; // 5 dakika sonunda zaman aşımı
+    echo json_encode(['success' => 'Product reserved and added to cart']);
+} else {
+    echo json_encode(['error' => 'Not enough stock']);
+}
+
+
+// restoreStocks
+
+echo json_encode(['debug' => 'Received request to restore stocks']); // Debug message
+if (!empty($_SESSION['cart'])) {
+
+    foreach ($_SESSION['cart'] as $productId => $details) {
+        $sql = "UPDATE products SET stock = stock + :quantity WHERE id = :productId";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['quantity' => $details['quantity'], 'productId' => $productId]);
+    }
+    $_SESSION['cart'] = []; // Sepeti temizle
+    echo json_encode(['success' => 'Stocks restored']);
+} else{
+    echo json_encode(['info' => 'Cart is already empty or session expired']);
+
+}
+
+/*
+if (isset($_POST['action']) && $_POST['action'] == 'fetchDetails') {
+    // Sepet session'dan alınır
+    if (!isset($_SESSION['cart'])) {
+        echo json_encode(['error' => 'Cart is empty']);
+        exit;
+    }
+
+    $productDetails = [];
+    foreach ($_SESSION['cart'] as $productId => $quantity) {
+        $sql = "SELECT * FROM products WHERE id = :productId";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['productId' => $productId]);
+        $product = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($product) {
+            $product['quantity'] = $quantity;
+            $productDetails[] = $product;
+        }
+    }
+
+    echo json_encode($productDetails);
+}
+
+
+
 /*
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['action']) && $_POST['action'] == 'add') {
         $productId = intval($_POST['product_id']);
         $quantity = intval($_POST['quantity']);*/
+/*
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['action'] == 'add') {
     $productId = isset($_POST['product_id']) ? intval($_POST['product_id']) : null;
     $quantity = isset($_POST['quantity']) ? intval($_POST['quantity']) : 1;

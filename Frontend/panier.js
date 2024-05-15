@@ -1,4 +1,83 @@
 document.addEventListener('DOMContentLoaded', function() {
+    displayCartItems();
+
+});
+function displayCartItems() {
+    let cart = JSON.parse(sessionStorage.getItem('cart')) || [];
+    const cartContainer = document.getElementById('cart-items');
+    cartContainer.innerHTML = ''; // Önceki içeriği temizle
+
+    if (cart.length === 0) {
+        cartContainer.innerHTML = 'Sepetiniz boş.';
+        return;
+    }
+    let html = '<ul>';
+    cart.forEach(item => {
+        html += `<li>
+                <img src="${item.photoUrl}" alt="${item.name}" style="width:100px; height:auto;">
+                ${item.name} - Miktar: ${item.quantity} - Fiyat: ${item.price * item.quantity} TL
+                </li>`;
+
+    });
+
+    html += '</ul>';
+    cartContainer.innerHTML = html;
+
+}
+
+function emptyCart() {
+    sessionStorage.removeItem('cart');
+    displayCartItems(); // Sepeti tekrar güncelle
+}
+
+function startCartTimeout() {
+    console.log("Cart timeout started. Cart will be cleared in 30 seconds.");
+    setTimeout(() => {
+        clearCart();
+    }, 30000); // 300000 ms = 30 saniye
+}
+
+function clearCart() {
+    console.log("Clearing cart due to inactivity.");
+    // Sepeti temizle
+    sessionStorage.removeItem('cart');
+    document.getElementById('cart-items').innerHTML = 'Your cart has been emptied due to inactivity.';
+
+    // Stokları geri yükle (Sunucuya istek gönder)
+    fetch('/Backend/panier.php', {
+        method: 'POST',
+        body: JSON.stringify({cart: sessionStorage.getItem('cart')}),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(response => response.json())
+        .then(data => {
+            console.log("stocks restored",data)
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+/*
+document.getElementById('refresh-cart').addEventListener('click', function() {
+    fetch('/Backend/panier.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'action=fetchDetails'
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);  // Güncel sepet bilgilerini burada işleyin
+            displayCartItems(data);  // Güncel bilgilerle sepeti tekrar göster
+        })
+        .catch(error => console.error('Error refreshing cart:', error));
+});
+
+/*
+
+
+document.addEventListener('DOMContentLoaded', function() {
     const addToCartBtn = document.getElementById('add-to-cart-btn');
     if (addToCartBtn) {
         // Sepete ürün ekle
@@ -27,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Error:', error);
             });
         });
-    }
+    }*//*
 
     // Sepeti yükle
     function loadCart() {
@@ -60,7 +139,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Sayfa yüklendiğinde sepeti yükle
     loadCart();
-});
+});*/
+/*
 document.addEventListener('DOMContentLoaded', function() {
     updateCartCount();
 

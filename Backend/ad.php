@@ -11,7 +11,7 @@ header('Content-Type: application/json');
 
 require 'dbConnector.php';
 $pdo = openDBConnection();
-
+session_start();
 
 // ana sayfada ki ilanlarin ad.html sayfasinda detaylica gosterilmesi
 
@@ -39,3 +39,5 @@ if ($ad) {
 }
 
 // ana sayfada harita uzerinde ki ilanlarin ad.html sayfasinda detaylica gosterilmesi.
+
+
