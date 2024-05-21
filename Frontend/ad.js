@@ -36,7 +36,7 @@ function updatePageContent(ad) {
     document.getElementById('ad_stock').textContent = `Stock: ${ad.product_stock}`;
     document.getElementById('ad_address').textContent = `Address: ${ad.street} ${ad.building_number}, ${ad.postal_code} ${ad.city}, ${ad.canton}`;
     document.getElementById('ad_creation_date').textContent = `Creation Date: ${new Date(ad.creation_date).toLocaleDateString()}`;
-    document.getElementById('add-to-cart-btn').dataset.productId = ad.id;
+    document.getElementById('add-to-cart-btn').dataset.productId = ad.product_id; // Burada product_id set ediliyor
     updateButtonVisibility();
 }
 
@@ -49,37 +49,77 @@ function setupEventListeners() {
     };
 }
 
-function addToCart(productId) {
 
-    const quantity = parseInt(document.getElementById('product-quantity').value, 10);
-    if (quantity < 1) {
-        alert("En az bir ürün eklemelisiniz!");  // Miktar yeterli değilse uyarı ver
-        return;  // Fonksiyonu burada sonlandır
-    }
+function checkStock(productId, quantity) {
+    fetch(`/Backend/checkStock.php?productId=${productId}&quantity=${quantity}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert(data.error);
+            } else {
+                updateStock(productId, quantity);
+            }
+        })
+        .catch(error => {
+            console.error('Error checking stock:', error);
+        });
+}
+
+function updateStock(productId, quantity) {
+    fetch(`/Backend/updateStock.php?productId=${productId}&decreaseAmount=${quantity}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert(data.error);
+            } else {
+                addProductToCart(productId, quantity);
+                alert("Ürün sepete eklendi ve stok güncellendi.");
+            }
+        })
+        .catch(error => {
+            console.error('Error updating stock:', error);
+        });
+}
+
+function addProductToCart(productId, quantity) {
     let cart = JSON.parse(sessionStorage.getItem('cart')) || [];
-    //const product = { id: productId, quantity: quantity };
+    const existingProductIndex = cart.findIndex(item => item.id === productId);
+    const newQuantity = existingProductIndex !== -1 ? cart[existingProductIndex].quantity + quantity : quantity;
+
     const product = {
         id: productId,
         name: document.getElementById('ad_product_name').textContent,
         price: parseFloat(document.getElementById('ad_price').textContent.replace('Price: ', '')),
-        photoUrl: document.getElementById('ad_image').src,// Ürünün fotoğraf URL'sini al
-        quantity: quantity
+        photoUrl: document.getElementById('ad_image').src,
+        quantity: newQuantity
     };
 
-    const existingProductIndex = cart.findIndex(item => item.id === productId);
     if (existingProductIndex !== -1) {
-        cart[existingProductIndex].quantity += quantity;
-        alert("mevcut urun miktari artirildi");
+        cart[existingProductIndex].quantity = newQuantity;
     } else {
-
         cart.push(product);
-        alert("ürün sepete eklendi")
     }
     sessionStorage.setItem('cart', JSON.stringify(cart));
     updateCartCount();
-    //alert("Ürün sepete eklendi!");
-    //startCartTimeout();
 }
+function addToCart(productId) {
+    const quantity = parseInt(document.getElementById('product-quantity').value, 10);
+    if (quantity < 1) {
+        alert("En az bir ürün eklemelisiniz!");
+        return;
+    }
+
+    let cart = JSON.parse(sessionStorage.getItem('cart')) || [];
+    const existingProductIndex = cart.findIndex(item => item.id === productId);
+    const existingQuantity = existingProductIndex !== -1 ? cart[existingProductIndex].quantity : 0;
+    const totalQuantity = existingQuantity + quantity;
+
+    checkStock(productId, totalQuantity);
+}
+
+
+
+
 
 function updateCartCount() {
     let cart = JSON.parse(sessionStorage.getItem('cart')) || [];

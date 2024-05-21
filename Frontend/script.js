@@ -84,7 +84,6 @@ window.onclick = function(event) {
     }
 }
 
-
 // Add event listener for subscription form submission
 document.getElementById('subscribe-form').addEventListener('submit', function(event) {
     event.preventDefault();
@@ -114,7 +113,6 @@ if (password !== confirmPassword) {
     alert('Passwords do not match.');
 
 }
-
 
 fetch('/Backend/subscribe.php', {
     method: 'POST',
