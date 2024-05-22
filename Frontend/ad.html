@@ -3,46 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <title>Détails de l'annonce</title>
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="messages_panel.css">
     <link rel="stylesheet" href="panier.css">
 
 
 </head>
 <body>
-<div id="ad-container">
-    <h1 id="ad_title"></h1>
-    <img id="ad_image" src="" alt="Image de l'annonce">
-    <p id="ad_description"></p>
-    <p id="ad_product_name"></p>
-    <p id="ad_price"></p>
-    <p id="ad_stock"></p>
-    <p id="ad_address"></p>
-    <p id="ad_creation_date"></p>
-    <input type="number" id="product-quantity" value="0" min="1">
-    <button id="message-seller" style="display: none">Messages</button>
-    <button id="add-to-cart-btn" style="display: none" data-product-id="product_id" onclick="addToCart()">Add To Cart</button>
-    <button id="panier-button" style="display: none">Panier(0)</button>
-</div>
-<!--
-<div id="messaging-panel" class="hidden">
-    <div class="chat-header">
-        <h2 id="chat-title">Chat with Seller</h2>
+    <div id="ad-container">
+        <h1 id="ad_title"></h1>
+        <img id="ad_image" src="" alt="Image de l'annonce">
+        <p id="ad_description"></p>
+        <p id="ad_product_name"></p>
+        <p id="ad_price"></p>
+        <p id="ad_stock"></p>
+        <p id="ad_address"></p>
+        <p id="ad_creation_date"></p>
+        <input type="number" id="product-quantity" value="0" min="1">
+        <button id="message-seller" style="display: none">send Messages</button>
+        <button id="add-to-cart-btn" style="display: none" data-product-id="product_id" onclick="addToCart()">Add To Cart</button>
+        <button id="panier-button" style="display: none">Panier(0)</button>
+        <!--<button id="my-messages"> Mesajlari goruntule</button>-->
     </div>
-    <div id="messages-container">
-         Messages will be appended here
+
+
+    <div id="messaging-panel" class="hidden">
+        <div class="chat-header">
+            <h2 id="chat-title">Chat with Seller</h2>
+            <button onclick="closeChat()">Close</button> <!-- Close düğmesi eklendi -->
+        </div>
+        <div id="messages-container">
+            Messages  here
+        </div>
+
+        <div class="chat-input">
+            <input type="text" id="message-input" placeholder="Type a message...">
+            <button id="send-message-btn">Send</button>
+        </div>
+        <!--
+        <div class="chat-input">
+            <form id="message-form" onsubmit="sendMessage(event)"> Form elementi eklendi ve submit olayı ile sendMessage tetikleniyor
+                <input type="text" id="message-input" placeholder="Type a message...">
+                <input type="submit" value="Send">  Submit düğmesi, daha önceki button yerine geçirildi
+            </form>
+        </div>
+    -->
     </div>
-    <div class="chat-input">
-        <input type="text" id="message-input" placeholder="Type a message...">
-        <button onclick="sendMessage()">Send</button>
-    </div>
-</div>
--->
-<script src="ad.js"></script>
 
 
 
 
-
-
+    <script src="ad.js"></script>
+    <script src="sendMessages.js"></script>
 </body>
 </html>

@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Caves</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v8.2.0/ol.css">
@@ -12,6 +13,7 @@
 
 </head>
 <body>
+    <h2>Welcome to the homepage!</h2>
     <div id=" navbar">
         <div id="navbar-items">
             <div id="logo">LOGO</div>
@@ -56,12 +58,10 @@
                     <input type="text" id="search-input" placeholder="write here" />
                     <button type="submit" id="search-btn">search</button>
                 </form>
-
                 <button id="logout-btn" style="display: none"> Logout </button>
-                <a href="messages.html">
+                <a href="myMessages.html">
                     <button id="messages-btn" style="display: none"> Messages</button>
                 </a>
-
                 <button id="filter-btn" style="display: none"> Filter</button>
                 <a href ="mypage.html">
                     <button id="mypage-btn" style="display: none"> MyPage</button>
@@ -100,7 +100,7 @@
                 // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
                 style: 'mapbox://styles/mapbox/streets-v12',
                 center: [8.2275, 46.8182],
-                zoom: 7
+                zoom: 6
             });
 
             // İlanları yüklemek için bir fonksiyon
@@ -167,7 +167,6 @@
 
 
 <script src="user_en_map.js"></script>
-<script src="map.js"></script>
 <script src="script.js"></script>
 <script src="accueil.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/ol@v8.2.0/dist/ol.js"></script>

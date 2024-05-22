@@ -38,6 +38,8 @@ function updatePageContent(ad) {
     document.getElementById('ad_creation_date').textContent = `Creation Date: ${new Date(ad.creation_date).toLocaleDateString()}`;
     document.getElementById('add-to-cart-btn').dataset.productId = ad.product_id; // Burada product_id set ediliyor
     updateButtonVisibility();
+
+
 }
 
 function setupEventListeners() {
@@ -117,10 +119,6 @@ function addToCart(productId) {
     checkStock(productId, totalQuantity);
 }
 
-
-
-
-
 function updateCartCount() {
     let cart = JSON.parse(sessionStorage.getItem('cart')) || [];
     let totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -137,3 +135,11 @@ function updateButtonVisibility() {
 }
 
 //script.js uzerinde logoutUser fonksiyonnunda ki session destroy ile sepete eklenen ilanlar logout islemi sonrasi silinir.
+
+document.getElementById('message-seller').addEventListener('click', function() {
+    document.getElementById('messaging-panel').style.display = 'block';
+});
+
+function closeChat() {
+    document.getElementById('messaging-panel').style.display = 'none';
+}

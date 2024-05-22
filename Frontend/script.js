@@ -118,7 +118,9 @@ fetch('/Backend/subscribe.php', {
     method: 'POST',
     body: new FormData(document.getElementById('subscribe-form'))
 })
-//let userMarker = null; // Initialize to null to manage its state globally
+
+
+//let userMarker = null;
 //login
 document.getElementById('login-form').addEventListener('submit', function(event) {
     event.preventDefault(); // Formun varsayılan gönderme işlemini engelleyin.
