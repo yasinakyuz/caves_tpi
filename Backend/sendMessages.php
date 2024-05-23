@@ -12,21 +12,23 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-
 header('Content-Type: application/json');
 require 'dbConnector.php';
 $pdo = openDBConnection();
 session_start();
 
 //$data = json_decode(file_get_contents("php://input"), true);
-
 $currentUserId = $_SESSION['user_id'] ?? null;
+
+
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
     $message_text = $data['message'] ?? null;
     $announcement_id = $data['announcement_id'] ?? null;
-    $buyer_id = $currentUserId;
+    //$buyer_id = $currentUserId;
+    $buyer_id = $data['original_buyer_id'] ?? $currentUserId;  // Eğer original_buyer_id set edilmişse onu kullan, değilse oturum ID'sini kullan
 
     if (!$message_text || !$announcement_id || !$buyer_id) {
         echo json_encode(['success' => false, 'error' => 'Invalid input data']);
@@ -67,3 +69,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 } else {
     echo json_encode(['success' => false, 'error' => 'Invalid request method']);
 }
+
+

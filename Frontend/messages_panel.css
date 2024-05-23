@@ -1,4 +1,25 @@
-#messaging-panel {
+.popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid #888;
+    z-index: 9;
+    background-color: white;
+    padding: 20px;
+}
+.popup-content {
+    display: flex;
+    flex-direction: column;
+}
+.close {
+    align-self: flex-end;
+    cursor: pointer;
+}
+
+/*
+messaging-panel {
     position: fixed;
     right: 0;
     top: 0;
@@ -11,11 +32,10 @@
     box-shadow: -2px 0 5px rgba(0,0,0,0.2);
     transition: right 0.3s;
 }
-
 .hidden {
     right: -320px; /* Hide the chat panel off-screen when not in use */
-}
 
+/*
 .chat-header {
     padding: 10px;
     background: #f1f1f1;
@@ -40,3 +60,5 @@
 .chat-input button {
     width: 18%;
 }
+*/
+

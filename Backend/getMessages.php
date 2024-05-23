@@ -18,7 +18,7 @@ require 'dbConnector.php';
 $pdo = openDBConnection();
 session_start();
 
-//$data = json_decode(file_get_contents("php://input"), true);
+
 $currentUserId = $_SESSION['user_id'] ?? null;
 
 if ($currentUserId) {
@@ -26,12 +26,14 @@ if ($currentUserId) {
               FROM messages m
               JOIN users u ON u.id = m.buyer_id
               JOIN announcements a ON a.id = m.announcement_id
-              WHERE a.users_idusers = ?
+              WHERE a.users_idusers = ? 
               ORDER BY m.sent_time DESC";
 
     $stmt = $pdo->prepare($query);
     $stmt->execute([$currentUserId]);
     $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
 
     echo json_encode(['success' => true, 'messages' => $messages]);
 } else {

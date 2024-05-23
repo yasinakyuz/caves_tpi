@@ -143,3 +143,9 @@ document.getElementById('message-seller').addEventListener('click', function() {
 function closeChat() {
     document.getElementById('messaging-panel').style.display = 'none';
 }
+
+
+function redirectToMessages() {
+    const adId = document.getElementById('ad_title').textContent; // Bu kısım ilanın benzersiz ID'sini almak için güncellenmelidir.
+    window.location.href = 'myMessages.html?adId=' + adId; // URL'ye ilan ID'si ekleniyor
+}

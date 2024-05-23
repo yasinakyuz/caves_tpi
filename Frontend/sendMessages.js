@@ -1,4 +1,5 @@
 
+
 document.getElementById('send-message-btn').addEventListener('click', sendMessage);
 
 function sendMessage() {
@@ -57,3 +58,4 @@ function getCurrentUserId() {
     // Implement this function to get the buyer ID, for example, from a session or a global variable
     return 1; // Placeholder value, replace with actual logic
 }
+
