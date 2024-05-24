@@ -21,6 +21,8 @@ session_start();
 
 $currentUserId = $_SESSION['user_id'] ?? null;
 
+
+
 if ($currentUserId) {
     $query = "SELECT m.message_text, m.sent_time, u.name, u.firstname, a.title, a.id as ad_id
               FROM messages m
