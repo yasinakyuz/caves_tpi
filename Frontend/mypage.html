@@ -7,12 +7,13 @@
     <link rel="stylesheet" href="">
 </head>
 <body>
+<div id="header-include"></div>
 <h1>My Page</h1>
 
 <div id="user-info">
     <h2>Edit Personal Information</h2>
     <form id="edit-info-form" action="/Backend/mypage.php?action=updateUserInfo" method="post">
-        <input type="hidden" id="id" name="id" value=""> <!-- Kullanıcı ID'nizi buraya girin -->
+        <input type="hidden" id="id" name="id" value="">
         <input type="text" id="name" name="name" placeholder="Name">
         <input type="text" id="firstname" name="firstname" placeholder="first Name">
         <input type="text" id="company_name" name="company_name" placeholder="Company Name">
@@ -54,15 +55,15 @@
         <button type="submit">Post Ad</button>
     </form>
 </div>
-<!-- İlan Listeleme Bölümü -->
+<!-- Section de liste d'annonces -->
 <h2>Ads List</h2>
 <ul id="adsList" >
-    <!--  js -->
-    <!-- İlanlar burada listelenecek -->
+
+    <!-- Les annonces seront répertoriées ici -->
 </ul>
 
 
-
+<script SRC="header.js"></script>
 <script src="mypage.js"></script>
 </body>
 </html>

@@ -12,11 +12,12 @@
 
 
 </head>
+
 <body>
-    <h2>Welcome to the homepage!</h2>
+    <div id="header-include"></div>
+
     <div id=" navbar">
         <div id="navbar-items">
-            <div id="logo">LOGO</div>
             <div id="navbar-right">
                 <button id="login-btn">Login</button>
                 <div id="login-popup" class="popup-background">
@@ -55,7 +56,7 @@
                     </div>
                 </div>
                 <form id="search-form">
-                    <input type="text" id="search-input" placeholder="write here" />
+                    <input type="text" id="search-input" placeholder="Écrivez ici" />
                     <button type="submit" id="search-btn">search</button>
                 </form>
                 <button id="logout-btn" style="display: none"> Logout </button>
@@ -66,21 +67,20 @@
                 <a href ="mypage.html">
                     <button id="mypage-btn" style="display: none"> MyPage</button>
                 </a>
-
             </div>
         </div>
     </div>
-    <!-- Filtreleme için Popup Form -->
+    <!-- Formulaire contextuel pour le filtrage -->
     <div id="filter-popup" style="display:none; position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; z-index: 1000; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.5);">
         <h2>Filter Ads</h2>
         <form id="filter-form">
-            <label for="title">Title:</label>
+            <label for="title">Titre:</label>
             <input type="text" id="title" name="title">
             <br>
-            <label for="name_category">category:</label>
+            <label for="name_category">catégorie:</label>
             <input type="text" id="name_category" name="name_category">
             <br>
-            <label for="min-price">Minimum Price:</label>
+            <label for="min-price">Prix minimum:</label>
             <input type="number" id="min-price" name="min_price" placeholder="Min">
             <label for="max-price">Maximum Price:</label>
             <input type="number" id="max-price" name="max_price" placeholder="Max">
@@ -97,21 +97,21 @@
             mapboxgl.accessToken = 'pk.eyJ1IjoieWFzaW5ha3l1eiIsImEiOiJjbHRjcHh4bXowMm40MmtvOXJtdDRzMml1In0.sT1voDiQUrkzAx8bAjPKvw';
             const map = new mapboxgl.Map({
                 container: 'map',
-                // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
+                // Nous pouvons choisir notre style MapBox ou le préparer à Mapbox Studio et l’ajouter nous-mêmes.
                 style: 'mapbox://styles/mapbox/streets-v12',
                 center: [8.2275, 46.8182],
-                zoom: 6
+                zoom: 7
             });
 
-            // İlanları yüklemek için bir fonksiyon
+            // Une fonction pour télécharger des annonces
             map.on('load', function() {
 
-                fetch('/Backend/accueil.php') // PHP betiğinizin URL'si
+                fetch('/Backend/accueil.php')
                     .then(response => response.json())
                     .then(data => {
                         data.ads.forEach(ad => {
 
-                            // Adresi koordinatlara çevir ve haritada işaretleyici oluştur
+                            // Convertir l'adresse en coordonnées et créer un marqueur sur la carte
                             const query = encodeURIComponent(`${ad.street} ${ad.building_number}, ${ad.postal_code} ${ad.city}, ${ad.canton}`);
                             fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?access_token=${mapboxgl.accessToken}&limit=1`)
                                 .then(response => response.json())
@@ -165,7 +165,7 @@
         <button class="nav-btn">Contact</button>
     </footer>
 
-
+<script src="header.js"></script>
 <script src="user_en_map.js"></script>
 <script src="script.js"></script>
 <script src="accueil.js"></script>

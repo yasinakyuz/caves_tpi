@@ -9,7 +9,6 @@
 header('Access-Control-Allow-Origin: *');
 ob_start();
 session_start();
-
 require_once 'dbConnector.php'; //name bdd
 $conn = openDBConnection();
 
@@ -21,14 +20,12 @@ if ($conn){
     $stmt -> bindParam(1, $email);
     $stmt -> execute();
     //$result = $stmt -> get_result();
-
 }
 
 if ($user = $stmt->fetch(PDO::FETCH_ASSOC)) {
     //$user = $result ->fetch_assoc();
     $raw_password =$_POST['password'];
     $hashed_password_from_database = $user['password'];
-
     if (password_verify($raw_password,$hashed_password_from_database)){
         //user verified, get login credentials
         $_SESSION['user_id'] = $user['id'];
@@ -38,7 +35,5 @@ if ($user = $stmt->fetch(PDO::FETCH_ASSOC)) {
         echo 'failed';
     }
 }
-
 $stmt= null;
 $conn= null;
-?>

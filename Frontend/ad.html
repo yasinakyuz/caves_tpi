@@ -10,6 +10,7 @@
 
 </head>
 <body>
+    <div id="header-include"></div>
     <div id="ad-container">
         <h1 id="ad_title"></h1>
         <img id="ad_image" src="" alt="Image de l'annonce">
@@ -20,31 +21,31 @@
         <p id="ad_address"></p>
         <p id="ad_creation_date"></p>
         <input type="number" id="product-quantity" value="0" min="1">
-        <button id="message-seller" style="display: none">send Messages</button>
-        <button id="add-to-cart-btn" style="display: none" data-product-id="product_id" onclick="addToCart()">Add To Cart</button>
+        <button id="message-seller" style="display: none">envoyer des messages</button>
+        <button id="add-to-cart-btn" style="display: none" data-product-id="product_id" onclick="addToCart()">Ajouter au panier</button>
         <button id="panier-button" style="display: none">Panier(0)</button>
-        <!--<button id="my-messages"> Mesajlari goruntule</button>-->
+        <!--<button id="my-messages"> Afficher les messages</button>-->
     </div>
 
 
     <div id="messaging-panel" class="hidden">
         <div class="chat-header">
-            <h2 id="chat-title">Chat with Seller</h2>
-            <button onclick="closeChat()">Close</button> <!-- Close düğmesi eklendi -->
+            <h2 id="chat-title">Discutez avec le vendeur</h2>
+            <button onclick="closeChat()">Close</button> <!-- Bouton Fermer ajouté -->
         </div>
         <div id="messages-container">
             Messages  here
         </div>
 
         <div class="chat-input">
-            <input type="text" id="message-input" placeholder="Type a message...">
-            <button id="send-message-btn">Send</button>
+            <input type="text" id="message-input" placeholder="Tapez un message...">
+            <button id="send-message-btn">Envoyer</button>
         </div>
         <!--
         <div class="chat-input">
-            <form id="message-form" onsubmit="sendMessage(event)"> Form elementi eklendi ve submit olayı ile sendMessage tetikleniyor
+            <form id="message-form" onsubmit="sendMessage(event)"> L'élément Form a été ajouté et sendMessage est déclenché avec l'événement submit
                 <input type="text" id="message-input" placeholder="Type a message...">
-                <input type="submit" value="Send">  Submit düğmesi, daha önceki button yerine geçirildi
+                <input type="submit" value="Send">  Le bouton Soumettre a remplacé le bouton précédent
             </form>
         </div>
     -->
@@ -53,7 +54,8 @@
 
 
 
-    <script src="ad.js"></script>
-    <script src="sendMessages.js"></script>
+<script src="ad.js"></script>
+<script src="sendMessages.js"></script>
+<script src="header.js"></script>
 </body>
 </html>

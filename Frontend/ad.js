@@ -3,8 +3,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const adId = urlParams.get('id');
     if (!adId) {
         console.error('Ad ID is missing');
-        // ID yoksa kullanıcıya bilgi verin veya başka bir sayfaya yönlendirin.
-        document.getElementById('ad-container').innerHTML = '<p>Ürün bilgisi bulunamadı. Lütfen geçerli bir ürün seçin.</p>';
+
+        document.getElementById('ad-container').innerHTML = '<p>Aucune information sur le produit trouvée. Veuillez sélectionner un produit valide.</p>';
         return;
     }
 
@@ -14,9 +14,9 @@ document.addEventListener('DOMContentLoaded', function() {
             if(!ad.error) {
                 updatePageContent(ad);
                 setupEventListeners();
-                updateCartCount(); // Sayfa yüklendiğinde sepet sayısını güncelle
+                updateCartCount(); // Mettre à jour le nombre de paniers lors du chargement de la page
             } else{
-                document.getElementById('ad-container').innerHTML = '<p>Ürün bilgisi bulunamadı. Lütfen geçerli bir ürün seçin.</p>';
+                document.getElementById('ad-container').innerHTML = '<p>Aucune information sur le produit trouvée. Veuillez sélectionner un produit valide.</p>';
 
             }
 
@@ -36,7 +36,7 @@ function updatePageContent(ad) {
     document.getElementById('ad_stock').textContent = `Stock: ${ad.product_stock}`;
     document.getElementById('ad_address').textContent = `Address: ${ad.street} ${ad.building_number}, ${ad.postal_code} ${ad.city}, ${ad.canton}`;
     document.getElementById('ad_creation_date').textContent = `Creation Date: ${new Date(ad.creation_date).toLocaleDateString()}`;
-    document.getElementById('add-to-cart-btn').dataset.productId = ad.product_id; // Burada product_id set ediliyor
+    document.getElementById('add-to-cart-btn').dataset.productId = ad.product_id; //Product_id est défini ici
     updateButtonVisibility();
 
 
@@ -75,11 +75,11 @@ function updateStock(productId, quantity) {
                 alert(data.error);
             } else {
                 addProductToCart(productId, quantity);
-                alert("Ürün sepete eklendi ve stok güncellendi.");
+                alert("Le produit a été ajouté au panier et le stock a été mis à jour.");
             }
         })
         .catch(error => {
-            console.error('Error updating stock:', error);
+            console.error('Erreur lors de la mise à jour du stock:', error);
         });
 }
 
@@ -104,13 +104,13 @@ function addProductToCart(productId, quantity) {
     sessionStorage.setItem('cart', JSON.stringify(cart));
     updateCartCount();
 }
+
 function addToCart(productId) {
     const quantity = parseInt(document.getElementById('product-quantity').value, 10);
     if (quantity < 1) {
-        alert("En az bir ürün eklemelisiniz!");
+        alert("Vous devez ajouter au moins un produit!");
         return;
     }
-
     let cart = JSON.parse(sessionStorage.getItem('cart')) || [];
     const existingProductIndex = cart.findIndex(item => item.id === productId);
     const existingQuantity = existingProductIndex !== -1 ? cart[existingProductIndex].quantity : 0;
@@ -134,7 +134,7 @@ function updateButtonVisibility() {
     });
 }
 
-//script.js uzerinde logoutUser fonksiyonnunda ki session destroy ile sepete eklenen ilanlar logout islemi sonrasi silinir.
+//Les annonces ajoutées au panier avec destruction de session dans la fonction logoutUser sur script.js sont supprimées après le processus de déconnexion.
 
 document.getElementById('message-seller').addEventListener('click', function() {
     document.getElementById('messaging-panel').style.display = 'block';
@@ -146,6 +146,6 @@ function closeChat() {
 
 
 function redirectToMessages() {
-    const adId = document.getElementById('ad_title').textContent; // Bu kısım ilanın benzersiz ID'sini almak için güncellenmelidir.
-    window.location.href = 'myMessages.html?adId=' + adId; // URL'ye ilan ID'si ekleniyor
+    const adId = document.getElementById('ad_title').textContent;
+    window.location.href = 'myMessages.html?adId=' + adId; // L'identifiant de l'annonce est ajouté à l'URL
 }

@@ -7,21 +7,17 @@
  */
 header('Access-Control-Allow-Origin: *');
 session_start();
-session_unset();  // Tüm oturum değişkenlerini temizle
+session_unset();  // Effacer toutes les variables de session
+session_destroy(); //destroy session
 
 include 'dbConnector.php';
 
-//destroy session
 $_SESSION = array();
 if (ini_get("session.use_cookies")){
     $params = session_get_cookie_params();
     setcookie(session_name(), '', time() - 42000,
         $params["path"], $params["secure"], $params["domain"], $params["httponly"]);
-
 }
-
-session_destroy();
 echo 'success';
+echo "You have been logged out.";
 
-
-?>

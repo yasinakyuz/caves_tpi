@@ -12,7 +12,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 
-$title = $_GET['title'] ?? ''; // Use GET to allow for parameterization from URL
+$title = $_GET['title'] ?? ''; // J'utilise GET pour autoriser le paramétrage à partir d'une URL
 //$situation =$_GET['situation'] ?? '';
 $nameCategory = $_GET['name_category'] ?? '';
 $minPrice = $_GET['min_price'] ?? '';
@@ -28,7 +28,6 @@ $query = "SELECT a.id, a.title, a.situation, a.creation_date, u.street, u.buildi
     LEFT JOIN photos ph ON p.id = ph.products_id_products 
     WHERE a.delete_date IS NULL";
 
-// Modify the query if a title parameter is passed
 if (!empty($title)) {
     $query .= " AND a.title LIKE :title";
 }

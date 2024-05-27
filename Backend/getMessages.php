@@ -18,10 +18,7 @@ require 'dbConnector.php';
 $pdo = openDBConnection();
 session_start();
 
-
 $currentUserId = $_SESSION['user_id'] ?? null;
-
-
 
 if ($currentUserId) {
     $query = "SELECT m.message_text, m.sent_time, u.name, u.firstname, a.title, a.id as ad_id
@@ -34,8 +31,6 @@ if ($currentUserId) {
     $stmt = $pdo->prepare($query);
     $stmt->execute([$currentUserId]);
     $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-
 
     echo json_encode(['success' => true, 'messages' => $messages]);
 } else {

@@ -1,28 +1,28 @@
 document.addEventListener('DOMContentLoaded', (event) => {
-    // Kullanıcı ID'sini session storage veya başka bir yöntem ile alın
-    const userId = sessionStorage.getItem('user_id'); // Örnek için sessionStorage kullanılmıştır.
+    // L'ID utilisateur a été obtenu avec le stockage de session
+    const userId = sessionStorage.getItem('user_id'); // sessionStorage .
 
-    // Kullanıcı ID'sini formdaki gizli alana yerleştirin
+    // Placer l'ID utilisateur dans le champ masqué du formulaire
     if (userId) {
         document.getElementById('id').value = userId;
     }
 
     document.getElementById('edit-info-form').addEventListener('submit', function (e) {
-        e.preventDefault(); // Formun normal gönderimini engelle
+        e.preventDefault(); // Empêcher la soumission normale du formulaire
         var formData = new FormData(this);
-        formData.append('action', 'updateUserInfo'); // Form verilerine 'action' parametresi ekle
+        formData.append('action', 'updateUserInfo'); // Ajout du paramètre 'action' aux données du formulaire
 
         fetch('/Backend/mypage.php', {
             method: 'POST',
             body: formData
         })
-            .then(response => response.text()) // JSON yerine doğrudan metin olarak yanıt al
+            .then(response => response.text()) // obtenir la réponse directement sous forme de texte au lieu de JSON
             .then(data => alert(data))
             .catch(error => console.error('Error:', error));
     });
 });
 document.getElementById('post-ad-form').addEventListener('submit', function(e) {
-    e.preventDefault(); // Formun normal gönderimini engelle
+    e.preventDefault();
     var formData = new FormData(this);
     formData.append('action', 'postAd');
 
@@ -37,7 +37,7 @@ document.getElementById('post-ad-form').addEventListener('submit', function(e) {
         method: 'POST',
         body: formData
     })
-        .then(response => response.text()) // JSON yerine doğrudan metin olarak yanıt al
+        .then(response => response.text())
         .then(data => alert(data))
         .catch(error => console.error('Error:', error));
 
@@ -47,12 +47,10 @@ function updatePageWithNewAd(adData) {
     // Code to update the page dynamically, possibly using adData to insert new elements
 }
 document.addEventListener('DOMContentLoaded', (event) => {
-    // Kullanıcı ID'sini session storage veya başka bir yöntem ile alın
+    // ID => session storage
     // ...
-
-
     function fetchAds() {
-        fetch('/backend/mypage.php?action=fetchAds')
+        fetch('/Backend/mypage.php?action=fetchAds')
             .then(response =>{
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -72,9 +70,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
                         //let imagesHtml = '';
                         const imagesHtml = `<img src="${window.location.origin}${ad.photo_url}" alt="Product Image">`;
-                        // Birden fazla fotoğraf olduğunu varsayıyoruz, bu yüzden her birini ekleyelim
+                        // Je suppose qu'il y a plusieurs photos, alors ajoutons chacune d'elles
                         //console.log("ad lenght : ", ad.photo_url.length);
-                        console.log("ad lenght : ", ad.photo_url);
+                        console.log("ad lenght : ", ad.photo_url.length);
                         /*
                         if (ad.photo_url){// && ad.photos.length > 0) {
                             ad.photos.forEach(photo => {
@@ -83,7 +81,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                             });
                         }
                         else {
-                            // Varsayılan bir "resim yok" görseli
+                            // Une image par défaut « sans image »
                             imagesHtml = `<img src="${window.location.origin}/Frontend/images/no-image-available.png" alt="No Image Available">`;
                         }
 */
@@ -100,7 +98,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                         adsList.appendChild(adDiv);
                     });
                 } else {
-                    alert('An error occurred while loading the ads. ' + data.error);
+                    alert('Une erreur s est produite lors du chargement des annonces. ' + data.error);
                 }
             })
             .catch(error => {

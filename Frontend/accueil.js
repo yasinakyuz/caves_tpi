@@ -5,7 +5,7 @@
 document.getElementById('filter-form').addEventListener('submit', async function(e) {
 
     e.preventDefault();
-    // Filtreleme kriterlerini al
+    // Obtenir des critères de filtrage
     const title = document.getElementById('title').value;
     const categoryName = document.getElementById('name_category').value;
     const minPrice = document.getElementById('min-price').value;
@@ -16,7 +16,7 @@ document.getElementById('filter-form').addEventListener('submit', async function
         min_price : minPrice,
         max_price : maxPrice
     });
-    // Filtreleme kriterlerine göre ilanları getir
+    // Récupérer des annonces en fonction de critères de filtrage
     //await fetchAdsFiltered(title);
 });
 
@@ -24,13 +24,11 @@ document.getElementById('filter-form').addEventListener('submit', async function
 document.getElementById('search-form').addEventListener('submit', function(e) {
     e.preventDefault();
     const searchTerm = document.getElementById('search-input').value;
-    //fetchAdsFiltered(searchTerm);
     fetchAdsFiltered({ title: searchTerm })
 });
 
-let markers = []; // This should be a global variable that holds all your markers
+let markers = []; // Cela devrait être une variable globale contenant tous mes marqueurs
 function clearAdsAndMarkers() {
-
     const adsContainer = document.getElementById('ads-container');
     adsContainer.innerHTML = '';
 
@@ -38,24 +36,22 @@ function clearAdsAndMarkers() {
     markers.forEach(marker => marker.remove());
     markers = [];
     console.log("All markers removed, markers array reset.");
-    map.jumpTo({center: map.getCenter()});  // Haritayı yeniden odakla */
+    map.jumpTo({center: map.getCenter()});  // Recentrer la carte
 }
 
 async function fetchAdsFiltered(params) {
-    await clearAdsAndMarkers();   // Clear existing ads and markers before fetching new ones
-
+    await clearAdsAndMarkers();   // Effacez les publicités et les marqueurs existants avant d'en récupérer de nouveaux
     const queryParams = new URLSearchParams(params).toString();
     try {
         const response = await fetch(`/Backend/accueil.php?${queryParams}`);
         if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
         const result = await response.json();
         console.log("Ads fetched successfully:", result.ads);
-
-        displayAds(result.ads); // Display new ads
-        markers.forEach(marker => marker.remove()); // Mevcut marker'ları kaldır
-        markers = []; // Marker dizisini sıfırla
+        displayAds(result.ads); // Afficher de nouvelles annonces
+        markers.forEach(marker => marker.remove()); // Supprimer les marqueurs existants
+        markers = []; // Réinitialiser le tableau de marqueurs
         result.ads.forEach(ad => {
-            addMarker(ad); // Add new markers for each ad
+            addMarker(ad); // Ajouter de nouveaux marqueurs pour chaque nom
         });
     } catch (error) {
         console.error('Fetch error:', error);
@@ -66,7 +62,6 @@ function displayAds(ads) {
     const adsContainer = document.getElementById('ads-container');
     ads.forEach(ad => {
         console.log("Ad Data:", ad);
-
         const adElement = document.createElement('div');
         adElement.innerHTML = `
             <h3>${ad.title}</h3>
@@ -74,8 +69,7 @@ function displayAds(ads) {
             <img src="${ad.photo_url}" alt="Product image">
         `;
         adsContainer.appendChild(adElement);
-
-        //addMarker(ad);  // Add new markers for each ad
+        //addMarker(ad);  // Ajouter de nouveaux marqueurs pour chaque nom
     });
 }
 
@@ -83,7 +77,6 @@ function addMarker(ad) {
     const fullAddress = `${ad.street} ${ad.building_number}, ${ad.postal_code} ${ad.city}, ${ad.canton}`;
     const query = encodeURIComponent(fullAddress);
     console.log("Adding marker for ad:", ad.title, "with query:", query);
-
     fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?access_token=${mapboxgl.accessToken}&limit=1`)
      .then(response => response.json())
      .then(data => {
@@ -95,8 +88,7 @@ function addMarker(ad) {
                  .setLngLat(coordinates)
                  .setPopup(new mapboxgl.Popup({offset: 25}).setHTML(descriptionHTML))
                  .addTo(map);
-
-             markers.push(marker);  // Bu adım çok önemli, marker'ları global dizimize ekliyoruz
+             markers.push(marker);  // Cette étape est très importante, on ajoute les marqueurs à mon tableau global
              console.log("Marker added, total markers now:", markers.length);
          } else {
              console.log("No coordinates found for address:", fullAddress);

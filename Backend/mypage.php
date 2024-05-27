@@ -9,33 +9,31 @@
 
 
 session_start();
-require 'dbConnector.php'; // dbconnector.php dosyasını dahil et
+
+require 'dbConnector.php';
 $pdo = openDBConnection();
 $userId = $_SESSION['user_id'];
 $current_date = date('Y-m-d');
 
-
-
-// Kullanıcı bilgilerini güncelle
+// Mettre à jour les informations utilisateur
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $pdo = openDBConnection(); // Veritabanı bağlantısını aç
+    $pdo = openDBConnection(); // Connexion à la base de données
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     $id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
-    if (!$id) {
-        // Kullanıcı ID'si yoksa hata mesajı ver veya kullanıcıyı bir sayfaya yönlendir
+    if (!$id) { // S'il n'y a pas d'identifiant utilisateur
         exit('User is not logged in.');
     }
 
 
     if (isset($_POST['action']) && $_POST['action'] === 'updateUserInfo') {
-        // Mevcut kullanıcı bilgilerini al
+        // Récupération des informations utilisateur existantes
         $currentQuery = "SELECT * FROM users WHERE id = ?";
         $currentStmt = $pdo->prepare($currentQuery);
         $currentStmt->execute([$id]);
         $currentData = $currentStmt->fetch(PDO::FETCH_ASSOC);
 
-        // Formdan gelen verileri al, eğer veri yoksa mevcut verileri kullan
+        // Je récupère les données du formulaire, s'il n'y a pas de données j'utiliserai les données existantes
         $name = $_POST['name'] ?: $currentData['name'];
         $firstname = $_POST['firstname'] ?: $currentData['firstname'];
         $company_name = $_POST['company_name'] ?: $currentData['company_name'];
@@ -50,12 +48,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         //$password = $_POST['password'] ?: $currentData['password'];
         //$passwordHash = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-        $updated_date = $current_date; // Güncelleme tarihi olarak şu anki tarihi kullan
-
+        $updated_date = $current_date; // Date actuelle comme date de mise à jour
 
         $query = "UPDATE users SET name = ?, firstname = ?, company_name = ?, e_mail = ?, phone = ?, street = ?, building_number = ?, postal_code = ?, city = ?, canton = ?, password = ?, updated_date = ? WHERE id = ?";
         $stmt = $pdo->prepare($query);
-
         try {
             if ($stmt->execute([$name, $firstname, $company_name, $e_mail, $phone, $street, $building_number, $postal_code, $city, $canton, $passwordHash, $updated_date, $id])) {
                 echo "User info updated successfully.";
@@ -65,13 +61,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } catch (PDOException $e) {
             echo "Error updating user info: " . $e->getMessage();
         }
-
-
-        /*else {
-          echo "User not logged in or invalid request.";
-          } */
-
-
     } elseif (isset($_POST['action']) && $_POST['action'] === 'postAd') {
         $userId = $_SESSION['user_id'];
         $title = $_POST['title'] ?: '';
@@ -82,7 +71,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stock = $_POST['stock'] ?: '';
         //$photoUrl = $_POST['url'] ?: '';
 
-
         $userStreet = $_POST['userStreet'] ?: '';
         $userBuildingNumber = $_POST['userBuildingNumber'] ?: '';
         $userPostalCode = $_POST['userPostalCode'] ?: '';
@@ -90,10 +78,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $userCanton = $_POST['userCanton'] ?: '';
 
 
-
         $productStmt = $pdo->prepare("INSERT INTO products (prdct_name, price, stock) VALUES (?, ?, ?)");
         $productStmt->execute([$product_name, $price, $stock]);
-        $productId = $pdo->lastInsertId();
+        $productId = $pdo->lastInsertId();// Identifiant du produit
 
         // Assign category to the product
         $categoryStmt = $pdo->prepare("INSERT INTO categories (name_category, products_id_products) VALUES (?, ?)");
@@ -102,66 +89,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $adStmt = $pdo->prepare("INSERT INTO announcements (title, situation, users_idusers, products_id) VALUES (?, ?, ?, ?)");
         $adStmt->execute([$title, $situation, $userId, $productId]);
 
-
-
-
-        // İlan ID'sini al
+        // Numéro d'annonce
         $announcementId = $pdo->lastInsertId();
 
-        // Ürün ID'sini al
-        //$productId = $pdo->lastInsertId();
-
-        // Ürün ile ilanı ilişkilendir
+        // Dans cette section, j'associe le produit à l'annonce.
         $pdo->prepare("UPDATE announcements SET products_id=? WHERE id=?")->execute([$productId, $announcementId]);
 
         echo 'Ad posted successfully with category name: ' . $categoryName;
 
         if (!empty($_FILES['url']['name'][0])) {
-            $uploadDir = '/Frontend/images/'; // Görsellerin yükleneceği dizin
+            $uploadDir = '/Frontend/images/'; // Répertoire où les images seront téléchargées
             $totalFiles = count($_FILES['url']['name']);
             for ($i = 0; $i < $totalFiles; $i++) {
-                // Dosya yükleme işlemleri
+                // Opérations de téléchargement de fichiers
                 $fileName = basename($_FILES['url']['name'][$i]);
                 $filePath = $uploadDir . $fileName;
                 $fileType = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
                 $tempName = $_FILES['url']['tmp_name'][$i];
 
-                // Maksimum dosya sayısını kontrol et.
-
+                // Je vérifie le nombre maximum de fichiers pour éviter que la base de données ne gonfle
                 if ($totalFiles > 5) {
-                    echo 'You can only upload a maximum of 5 images.';
+                    echo 'Vous ne pouvez télécharger qu un maximum de 5 images.';
                 } else {
                     for ($i = 0; $i < $totalFiles; $i++) {
-                        // Yükleme hatalarını kontrol et.
+                        // Erreurs d'installation
                         if ($_FILES['url']['error'][$i] !== UPLOAD_ERR_OK) {
-                            echo "Upload error with file: " . $_FILES['url']['name'][$i];
+                            echo "Erreur de téléchargement avec le fichier: " . $_FILES['url']['name'][$i];
                             continue;
                         }
-
-                        // Yüklenen dosyanın bir resim olduğunu doğrula.
+                        // Vérifiez que le fichier téléchargé est une image.
                         $finfo = new finfo(FILEINFO_MIME_TYPE);
                         $fileMimeType = $finfo->file($_FILES['url']['tmp_name'][$i]);
                         if (strpos($fileMimeType, 'image') !== 0) {
-                            echo "The file is not an image.";
+                            echo "Le fichier n'est pas une image.";
                             continue;
                         }
-
-                        // Dosya boyutu kontrolü (5MB maksimum).
+                        // Contrôle de la taille du fichier (5 Mo maximum).
                         if ($_FILES['url']['size'][$i] > (5 * 1024 * 1024)) {
-                            echo "The image must be smaller than 5MB.";
+                            echo "L'image doit être inférieure à 5 Mo.";
                             continue;
                         }
 
-                        // Dosyanın yüklenmesini ve veritabanına kaydedilmesini dene.
+                        // Téléchargez le fichier et enregistrez-le dans la base de données.
                         $tempName = $_FILES['url']['tmp_name'][$i];
                         $fileName = $_FILES['url']['name'][$i];
                         $filePath = $uploadDir . basename($fileName);
                         if (move_uploaded_file($_FILES['url']['tmp_name'][$i], $_SERVER['DOCUMENT_ROOT'] . '/' . $filePath)){
-                            $description = ''; // Açıklamayı formdan al./ aktif edilmedi null olabilir
+                            $description = ''; // J'obtiens l'explication du formulaire. Il peut paraître nul car il n'est pas activé.
                             $photoStmt = $pdo->prepare("INSERT INTO photos (img_name, url, description, products_id_products) VALUES (?, ?, ?, ?)");
                             $photoStmt->execute([$fileName, $filePath, $description, $productId]);
                         } else {
-                            echo "Failed to move uploaded file.";
+                            echo "Échec du déplacement du fichier téléchargé.";
                             /*
                             // SQL to insert image information into the database
                             $description = 'Description here'; // Use actual description
@@ -170,53 +148,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $query = "INSERT INTO photos (img_name, url, description, products_id_products) VALUES (?, ?, ?, ?)";
                             $stmt = $pdo->prepare($query);
                             $stmt->execute([$fileName, $filePath, $description, $productId]); */
-
                         }
                     }
-
-                    echo "All images saved.";
+                    echo "Toutes les images enregistrées.";
                 }
             }
-
         } else {
-            echo "No images uploaded.";
+            echo "Aucune image téléchargée.";
         }
         echo 'success';
         exit;
     }
     if ($userId) {
-        // Veritabanından kullanıcının resimlerini çek
+        // Récupérer les images de l'utilisateur à partir de la base de données
         $stmt = $pdo->prepare("SELECT * FROM photos WHERE products_id_products IN (SELECT id FROM products WHERE user_id = ?)");
         $stmt->execute([$userId]);
         $photos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // HTML olarak resimleri göster
+        // Afficher des images en HTML
         foreach ($photos as $photo) {
             echo '<img src="'.htmlspecialchars($photo['url']).'" alt="'.htmlspecialchars($photo['description']).'">';
         }
     }
-
-
     if (isset($_POST['action'])) {
         switch ($_POST['action']) {
             case 'updateUserInfo':
-                // Kullanıcı bilgilerini güncelle
+                // Mettre à jour les informations utilisateur
                 break;
             case 'postAd':
-                // İlan gönder
+                // publier une annonce
                 break;
-            // Diğer POST işlemleri
+            // J'ajouterai d'autres opérations POST ici au fur et à mesure que la page se développera.
         }
     }
 
-
-
-// İlanları veritabanından çek
+// Je retire les annonces de la base de données
 }    elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if(isset($_SESSION['user_id'])) {
         $userId = $_SESSION['user_id'];
 
-        try {   // İlanları ve ilişkili adres bilgilerini çekme işlemleri burada olacak
+        try {   // Extraction de publicités et d'informations d'adresse associées
             $adsStmt = $pdo->prepare("
                 SELECT a.id, 
                        a.title, 
@@ -241,11 +212,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ");
             $adsStmt->execute([$userId]);
             $ads = $adsStmt->fetchAll(PDO::FETCH_ASSOC);
-            header('Content-Type: application/json'); // JSON içerik tipini belirtin
+            header('Content-Type: application/json'); // Je précise le type de contenu JSON
             echo json_encode(['success' => true, 'ads' => $ads]);
         } catch (PDOException $e) {
-            // Hata durumunda JSON ile hata mesajını döndür
-            header('Content-Type: application/json'); // JSON içerik tipini belirtin
+            // En cas d'erreur, le message d'erreur sera renvoyé en JSON
+            header('Content-Type: application/json'); // JSON
             echo json_encode(['success' => false, 'error' => $e->getMessage()]);
             exit;
         }
@@ -253,4 +224,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 
-?>
+

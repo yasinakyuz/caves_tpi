@@ -11,9 +11,9 @@ require 'dbConnector.php';
 $pdo = openDBConnection();
 session_start();
 
-$currentUserId = $_SESSION['user_id'] ?? null; // Giriş yapmış kullanıcı ID'si
+$currentUserId = $_SESSION['user_id'] ?? null; // ID utilisateur de connexion
 
-// ana sayfada ki ilanlarin ad.html sayfasinda detaylica gosterilmesi
+// Afficher les publicités de la page d'accueil en détail sur la page ad.html
 
 $adId = isset($_GET['id']) ? $_GET['id'] : die(json_encode(['error' => 'Ad ID is required']));
 
@@ -39,5 +39,4 @@ if ($ad) {
     echo json_encode(['error' => 'Annonce non trouvée.']);
 }
 
-// ana sayfada harita uzerinde ki ilanlarin ad.html sayfasinda detaylica gosterilmesi.
 

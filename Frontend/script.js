@@ -4,25 +4,18 @@ document.addEventListener('DOMContentLoaded', (event) => {
 });
 
 function checkLoginState() {
-    // Bu örnekte, giriş durumu bir oturum değişkeninin varlığına göre kontrol edilmektedir.
-    // Gerçek projenizde, bu kontrolü sunucu tarafından sağlanan oturum yönetimiyle yapmalısınız.
-    var isLoggedIn = sessionStorage.getItem('userLoggedIn'); // Örnek için sessionStorage kullanılmıştır.
+    // le statut de connexion est vérifié en fonction de l'existence d'une variable de session.
+    var isLoggedIn = sessionStorage.getItem('userLoggedIn'); // => sessionStorage
 
     if (isLoggedIn) {
         document.getElementById('login-btn').style.display = 'none';
         document.getElementById('logout-btn').style.display = 'block';
-
-
     } else {
         document.getElementById('login-btn').style.display = 'block';
         document.getElementById('logout-btn').style.display = 'none';
-
-
     }
 }
-
-
-// Popup penceresini göster
+// Afficher la fenêtre contextuelle
 function showPopup() {
     var popup = document.getElementById('subscribe-popup');
     popup.style.display = 'block';
@@ -33,48 +26,41 @@ function closePopup() {
     var popup = document.getElementById('subscribe-popup');
     popup.style.display = 'none';
 }
-
-// Butona tıklandığında popup'ı göster
+// Afficher une fenêtre contextuelle lorsque vous cliquez sur le bouton
 document.getElementById('subscribe').addEventListener('click', showPopup);
-
-// Kapat butonuna tıklandığında popup'ı kapat
+// Fermez la fenêtre contextuelle lorsque vous cliquez sur le bouton Fermer
 document.querySelector('.close').addEventListener('click', closePopup);
 
-// Pencere dışına tıklandığında popup'ı kapat
+// Fermer la fenêtre contextuelle lorsque vous cliquez en dehors de la fenêtre
 window.onclick = function(event) {
     var popup = document.getElementById('subscribe-popup');
     if (event.target == popup) {
         popup.style.display = 'none';
     }
 }
-
-
-
-// Login popup penceresini göster
+// Afficher la fenêtre contextuelle de connexion
 function showLoginPopup() {
     var popup = document.getElementById('login-popup');
     popup.style.display = 'block';
 }
-
-// Login popup penceresini kapat
+// Fermer la fenêtre contextuelle de connexion
 function closeLoginPopup() {
     var popup = document.getElementById('login-popup');
     popup.style.display = 'none';
 }
 
-// 'login' butonu için event listener
+// 'login' => event listener
 document.getElementById('login-btn').addEventListener('click', showLoginPopup);
 
-// Close işlemleri için mevcut fonksiyonlarına benzer şekilde login popup için
+// Semblable aux fonctions existantes pour les opérations de fermeture, connectez-vous pour une fenêtre contextuelle
 var closeButtons = document.getElementsByClassName("close");
 for(var i = 0; i < closeButtons.length; i++) {
     closeButtons[i].addEventListener('click', function() {
         closeLoginPopup();
-        closePopup(); // Eğer her iki popup için aynı kapatma butonunu
+        closePopup(); // même bouton de fermeture pour les deux popups
     });
 }
-
-// Pencere dışına tıklandığında tüm popup'ları kapat
+// Fermez toutes les fenêtres contextuelles lorsque vous cliquez en dehors de la fenêtre
 window.onclick = function(event) {
     if (event.target == document.getElementById('login-popup')) {
         closeLoginPopup();
@@ -83,7 +69,6 @@ window.onclick = function(event) {
         closePopup();
     }
 }
-
 // Add event listener for subscription form submission
 document.getElementById('subscribe-form').addEventListener('submit', function(event) {
     event.preventDefault();
@@ -110,23 +95,20 @@ document.getElementById('subscribe-form').addEventListener('submit', function(ev
 const password = document.getElementById('password').value;
 const confirmPassword = document.getElementById('confirm-password').value;
 if (password !== confirmPassword) {
-    alert('Passwords do not match.');
-
+    alert('Les mots de passe ne correspondent pas.');
 }
-
 fetch('/Backend/subscribe.php', {
     method: 'POST',
     body: new FormData(document.getElementById('subscribe-form'))
 })
 
-
 //let userMarker = null;
 //login
 document.getElementById('login-form').addEventListener('submit', function(event) {
-    event.preventDefault(); // Formun varsayılan gönderme işlemini engelleyin.
+    event.preventDefault();
     var email = document.getElementById('login-email').value;
     var password = document.getElementById('login-password').value;
-    loginuser(email, password); // loginuser fonksiyonunu çağırın.
+    loginuser(email, password); // Appel de la fonction loginuser
 });
 
 function loginuser(email, password) {
@@ -150,12 +132,12 @@ function loginuser(email, password) {
             sessionStorage.setItem('isLoggedIn', true);
 
             //localStorage.setItem('isLoggedIn', 'true');
-            console.log('Login successful');
+            console.log('Connexion réussie');
 
             showUserAddressOnMap();
 
         } else { //login failed
-            alert('Login information is incorrect.');
+            alert('Les informations de connexion sont incorrectes.');
         }
     })
     .catch(error => {
@@ -177,9 +159,8 @@ function logoutuser(){
         if (userMarker) {
             userMarker.remove();
         }
-
         sessionStorage.clear();
-        //sepete eklenen ilanlari da session storege ile kaldirmak icin
+        //Pour supprimer les annonces ajoutées au panier avec session storege
         window.location.reload()
         //window.location.href = 'index.html';
     })
@@ -187,23 +168,19 @@ function logoutuser(){
         console.error('Error:', error);
     })
 }
-
-// ana sayfada ki ilanlari gosterir.
+// Affiche les publicités sur la page d'accueil.
 document.addEventListener('DOMContentLoaded', () => {
     fetchAds();
     setInterval(fetchAds, 300000);
 });
 function fetchAds(){
-
     fetch('/Backend/accueil.php')
         .then(response => response.json())
         .then( data => {
             console.log('publicité : ', data)
             if (data.ads && data.ads.length) {
-
                 const adsContainer = document.getElementById('ads-container');
                 adsContainer.innerHTML = '';
-
                 data.ads.forEach(ad => {
                     const adDiv = document.createElement('div');
                     adDiv.className = 'ad';
@@ -220,7 +197,7 @@ function fetchAds(){
                     adsContainer.appendChild(adDiv);
 
                     adDiv.addEventListener('click', function() {
-                        window.location.href = `ad.html?id=${ad.id}`; // Detay sayfasına yönlendir
+                        window.location.href = `ad.html?id=${ad.id}`; // Redirection vers la page de détail
                     });
                     //console.log(document.querySelectorAll('.ad'));
                     //document.querySelectorAll('.ad').style.backgroundImage = `url('${ad.photo_url}')`;
@@ -233,7 +210,6 @@ function fetchAds(){
                     }
                 });
             } else {
-
                 console.error('No ads to display');
             }
         })
@@ -242,9 +218,6 @@ function fetchAds(){
     });
 
 }
-
-
-
 
 
 

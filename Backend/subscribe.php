@@ -13,10 +13,6 @@ require_once 'dbConnector.php';
 $conn = openDBConnection();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $conn = openDBConnection();
-
-
-
     // Retrieve and sanitize input
     $name = filter_input(INPUT_POST, 'lastname', FILTER_SANITIZE_STRING);
     $firstname = filter_input(INPUT_POST, 'firstname', FILTER_SANITIZE_STRING);
@@ -30,16 +26,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $canton = filter_input(INPUT_POST, 'canton', FILTER_SANITIZE_STRING);
     $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_STRING );
 
-
-
-    // Validate input
+    // Valider la saisie
     if (!filter_var($e_mail, FILTER_VALIDATE_EMAIL)) {
         echo 'Invalid email format';
         exit;
+        // ...validate other fields
     }
-    // ...validate other fields as necessary
 
-    // Check if user already exists
+    // Vérifier si l'utilisateur existe déjà
     $stmt = $conn->prepare("SELECT COUNT(*) FROM users WHERE e_mail = ?");
     $stmt->execute([$e_mail]);
     if ($stmt->fetchColumn() > 0) {
@@ -50,10 +44,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Hash password
     $passwordHash = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-    // Set the date
+    // Définir la date
     $current_date = date('Y-m-d');
 
-    // Insert user into the database
+    // Insérer un utilisateur dans la base de données
     $stmt = $conn->prepare("INSERT INTO users (name, firstname, company_name, e_mail, phone, street, building_number, postal_code, city, canton, register_date, updated_date , password) VALUES (:name, :firstname, :company_name, :e_mail, :phone, :street, :building_number, :postal_code , :city, :canton, :register_date, :updated_date, :password)");
     $stmt->bindParam(':name', $name);
     $stmt->bindParam(':firstname', $firstname);
@@ -69,7 +63,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bindParam(':updated_date', $current_date);
     $stmt->bindParam(':password', $passwordHash);
 
-
     try {
         $stmt->execute();
         echo 'success';
@@ -77,7 +70,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo 'Subscribe error:' . $exception->getMessage();
     }
 } else{
-    echo 'invalid request method';
+    echo 'méthode de requête invalide';
 }
 
-?>

@@ -10,13 +10,13 @@ function fetchMessages() {
             if (data.success) {
                 displayMessages(data.messages);
             } else {
-                console.error('Failed to fetch messages:', data.error);
-                alert('Failed to fetch messages: ' + data.error);
+                console.error('Échec de la récupération des messages:', data.error);
+                alert('Échec de la récupération des messages: ' + data.error);
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('An error occurred while fetching messages');
+            alert('Une erreur s est produite lors de la récupération des messages');
         });
 }
 
@@ -49,7 +49,7 @@ function toggleReplyForm(adId, name) {
 function sendReply(adId, originalBuyerId) {
     const replyText = document.getElementById(`reply-text-${adId}`).value;
     if (!replyText.trim()) {
-        alert("Please enter a reply message.");
+        alert("Veuillez saisir un message de réponse.");
         return;
     }
 
@@ -72,15 +72,15 @@ function sendReply(adId, originalBuyerId) {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert('Reply sent successfully');
+                alert('Réponse envoyée avec succès');
                 document.getElementById(`reply-text-${adId}`).value = ''; // Clear the textarea
             } else {
-                console.error('Failed to send reply:', data.error);
-                alert('Failed to send reply: ' + data.error);
+                console.error('Échec de l envoi de la réponse:', data.error);
+                alert('Échec de l envoi de la réponse: ' + data.error);
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('An error occurred while sending the reply');
+            alert('Une erreur s\'est produite lors de l envoi de la réponse');
         });
 }

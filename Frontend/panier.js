@@ -5,35 +5,37 @@ document.addEventListener('DOMContentLoaded', function() {
 function displayCartItems() {
     let cart = JSON.parse(sessionStorage.getItem('cart')) || [];
     const cartContainer = document.getElementById('cart-items');
-    cartContainer.innerHTML = ''; // Önceki içeriği temizle
-
+    cartContainer.innerHTML = ''; // Effacer le contenu précédent
     if (cart.length === 0) {
-        cartContainer.innerHTML = 'Sepetiniz boş.';
+        cartContainer.innerHTML = 'Votre panier est vide.';
         return;
     }
     let html = '<ul>';
     cart.forEach(item => {
         html += `<li>
                 <img src="${item.photoUrl}" alt="${item.name}" style="width:100px; height:auto;">
-                ${item.name} - Quantity: ${item.quantity} - Price: ${item.price * item.quantity} TL
+                ${item.name} - Quantity: ${item.quantity} - Price: ${item.price * item.quantity} CHF
                 </li>`;
     });
     html += '</ul>';
     cartContainer.innerHTML = html;
-
 }
+document.addEventListener('DOMContentLoaded', function() {
+    displayCartItems();
+    startCartTimeout();
+});
 /*
 function emptyCart() {
     sessionStorage.removeItem('cart');
-    displayCartItems(); // Sepeti tekrar güncelle
+    displayCartItems(); //
 }*/
 
 
 function startCartTimeout() {
-    console.log("Cart timeout started. Cart will be cleared in 30 seconds.");
+    console.log("Le délai d'attente du panier a commencé. Le panier sera effacé dans 30 secondes.");
     setTimeout(() => {
         clearCart();
-    }, 30000); // 30000 ms = 30 saniye
+    }, 30000); // 30000 ms = 30 secondes
 }
 
 function clearCart() {
@@ -43,11 +45,11 @@ function clearCart() {
             restoreStock(item.id, item.quantity);
         });
     }
-    console.log("Clearing cart due to inactivity.");
-    // Sepeti temizle
+    console.log("Vider le panier pour cause d'inactivité.");
+    // Vider le panier
     sessionStorage.removeItem('cart');
     updateCartCount();
-    displayCartItems(); // Sepeti tekrar güncelle
+    displayCartItems(); // Mettre à nouveau le panier à jour
     //restoreStock();
 }
 
@@ -61,52 +63,54 @@ function updateCartCount() {
     if (panierButton) {
         panierButton.textContent = `Panier(${totalCount})`;
     } else {
-        console.log('Panier button not found on the page.');
+        //console.log('Bouton Panier introuvable sur la page.');
     }
 }
 document.getElementById('empty-cart-btn').addEventListener('click', function() {
     let cart = JSON.parse(sessionStorage.getItem('cart')) || [];
     if (cart.length === 0) {
-        alert("Sepet zaten boş.");
+        alert("Le panier est déjà vide.");
         return;
     }
 
     cart.forEach(item => {
         restoreStock(item.id, item.quantity);
     });
-    // Sepeti temizle
+    // Vider le panier
     sessionStorage.setItem('cart', JSON.stringify([]));
     updateCartCount();
-    alert("Sepet boşaltıldı.");
-    // Sepetin UI'da boş olduğunu gösterecek güncellemeleri yapın
-    document.getElementById('cart-items').innerHTML = '<p>Your cart is empty.</p>'; // Bu satır, sepetin HTML yapısına göre düzenlenmelidir.
+    //alert("vide panier.");
+
+    document.getElementById('cart-items').innerHTML = '<p>Votre panier est vide.</p>';
 });
 
 function emptyCart() {
     let cart = JSON.parse(sessionStorage.getItem('cart')) || [];
     if (cart.length === 0) {
-        alert("Sepet zaten boş.");
+        //alert("Le panier est vide");
         return;
     }
-
     cart.forEach(item => {
         restoreStock(item.id, item.quantity);
     });
-    // Sepeti boşalt
+    // Vider le panier
     sessionStorage.setItem('cart', JSON.stringify([]));
     updateCartCount();
-    alert("Sepet boşaltıldı.");
-    displayCartItems();  // Sepeti tekrar güncelle
+    alert("Le panier a été vidé.");
+    displayCartItems();  // Mettre à nouveau le panier à jour
 }
+
 function restoreStock(productId, quantity) {
     fetch(`/Backend/restoreStock.php?productId=${productId}&restoreAmount=${quantity}`)
         .then(response => response.json())
         .then(data => {
             if (data.error) {
-                console.error('Failed to restore stock:', data.error);
+                console.error('Échec de la restauration du stock :', data.error);
             }
         })
         .catch(error => {
-            console.error('Error restoring stock:', error);
+            console.error('Erreur lors de la restauration du stock:', error);
         });
 }
+
+
