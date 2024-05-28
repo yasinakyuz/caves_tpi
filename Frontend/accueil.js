@@ -64,15 +64,23 @@ function displayAds(ads) {
         console.log("Ad Data:", ad);
         const adElement = document.createElement('div');
         adElement.innerHTML = `
-            <h3>${ad.title}</h3>
-            <p>${ad.situation}</p>
-            <img src="${ad.photo_url}" alt="Product image">
+            <a href="ad.html?id=${ad.id}" class="ad-link">
+                <div class="ad-content">
+                    <img src="${ad.photo_url}" alt="image d'annonce">
+                    <div class="ad-info">
+                        <h3>${ad.title}</h3>
+                        <p>${ad.situation}</p>
+                        <p>Stock: ${ad.stock}</p>
+                        <p>price: ${ad.price}</p>
+                    </div>
+                </div>
+            </a>
         `;
         adsContainer.appendChild(adElement);
         //addMarker(ad);  // Ajouter de nouveaux marqueurs pour chaque nom
     });
 }
-
+/*
 function addMarker(ad) {
     const fullAddress = `${ad.street} ${ad.building_number}, ${ad.postal_code} ${ad.city}, ${ad.canton}`;
     const query = encodeURIComponent(fullAddress);
@@ -82,7 +90,13 @@ function addMarker(ad) {
      .then(data => {
          if (data.features.length > 0) {
              const coordinates = data.features[0].center;
-             const descriptionHTML = `<div><strong>${ad.title}</strong><p>${ad.description}</p></div>`;
+             const descriptionHTML = `
+                <a href="ad.html?id=${ad.id}">
+                    <h3>${ad.title}</h3>
+                    <p>${ad.situation}</p>
+                    <img src="${ad.photo_url}" alt="Product image">
+                </a>
+               `;
 
              const marker = new mapboxgl.Marker()
                  .setLngLat(coordinates)
@@ -96,7 +110,53 @@ function addMarker(ad) {
      }).catch(error => {
      console.error("Error adding marker:", error);
     });
+}*/
+
+ function addMarker(ad, index, totalAdsAtLocation) {
+     const OFFSET = 0.0001; // Küçük ofset değeri
+     const angle = (index / totalAdsAtLocation) * 360; // Her marker için açı hesaplama
+     const radians = angle * (Math.PI / 180); // Dereceyi radyana çevirme
+
+     const fullAddress = `${ad.street} ${ad.building_number}, ${ad.postal_code} ${ad.city}, ${ad.canton}`;
+     const query = encodeURIComponent(fullAddress);
+
+     fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?access_token=${mapboxgl.accessToken}&limit=1`)
+         .then(response => response.json())
+         .then(data => {
+             if (data.features.length > 0) {
+                 const baseCoordinates = data.features[0].center;
+
+                 // Ofset uygulayarak yeni koordinatları hesaplama
+                 const newLongitude = baseCoordinates[0] + OFFSET * Math.cos(radians);
+                 const newLatitude = baseCoordinates[1] + OFFSET * Math.sin(radians);
+
+                 const coordinates = [newLongitude, newLatitude];
+                 const descriptionHTML = `
+                <a href="ad.html?id=${ad.id}">
+                    <h3>${ad.title}</h3>
+                    <p>${ad.situation}</p>
+                    <img src="${ad.photo_url}" alt="Product image">
+                </a>
+             `;
+
+                 const marker = new mapboxgl.Marker()
+                     .setLngLat(coordinates)
+                     .setPopup(new mapboxgl.Popup({offset: 25}).setHTML(descriptionHTML))
+                     .addTo(map);
+                 markers.push(marker);
+             }
+         }).catch(error => {
+         console.error("Error adding marker:", error);
+     });
+ }
+
+function scrollAds(direction) {
+    const adsContainer = document.getElementById('ads-container');
+    const scrollAmount = 300; // Her tıklamada ne kadar kaydırılacağını belirleyin
+
+    if (direction === 'left') {
+     adsContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    } else if (direction === 'right') {
+     adsContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
 }
-
-
-

@@ -35,18 +35,10 @@ header {
     height: auto;
 }
 
-#theme-selector-container {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-}
 
-#theme-selector {
-    margin-left: 10px;
-}
 
 nav button{
-    padding:10px 20px;
+    padding:10px 100px;
     margin-left:10px;
     background-color: #4caf50;
     color:white;
@@ -69,10 +61,15 @@ footer{
     display: flex;
     justify-content: center;
     padding: 10px;
-    background-color: #4caf50;
+    background-color: beige;
     border-top:1px solid #e7e7e7;
 
 }
+
+#theme-selector {
+    margin-left: 10px;
+}
+
 #theme-selector-container {
     margin-left: auto;
     display: flex;
@@ -87,6 +84,33 @@ body.theme-light {
 body.theme-dark {
     background-color: #000000;
     color: #ffffff;
+}
+.popup-content {
+    width: 3cm;
+    height: 5cm;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-size: cover;
+    background-position: center;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.popup-text-content {
+    color: white;
+    z-index: 3;
+    text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.7); /* Metin okunabilirliğini artırmak için */
+}
+
+.popup-link {
+    background-color: #4caf50;
+    color: white;
+    text-align: center;
+    padding: 5px 10px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
 }
 
 @media (max-width: 600px) {
@@ -132,31 +156,106 @@ body.theme-dark {
     align-items: center;
     overflow: hidden;
     margin: 20px 0;
+    justify-content: center;
+    width: 100%;  // Tüm genişlik
 }
 
 #ads-container{
     display: flex;
+    padding: 10px;
     white-space: nowrap;
+    overflow-x: auto;  // Yatay kaydırma için
     transition: transform 0.3s ease;
+    scroll-behavior: smooth;
 }
 
 .ad {
+    flex-shrink: 0;
     display: inline-block;
-    width: 200px;
-    height: 120px;
-    margin: 0 10px;
-    background-color: #ddd;
-    line-height: 120px;
+    width: 10cm;
+    height: 5cm;
+    overflow: hidden;
+    position: relative;
+    margin: 10px;
+    background-size: cover;  /* Arka planı kapla */
+    background-position: center;  /* Merkeze al */
+
+}
+.ad-content {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+.ad-content img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;  /* Resmin boyutları kutuya sığacak şekilde ayarlanır */
+}
+.ad img {
+    display: none;
+}
+
+.ad-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Yarı saydam arka plan */
+    color: white;
+    padding: 5px;
+    box-sizing: border-box;
     text-align: center;
 }
 
 .scroll-btn{
-    padding: 10px;
-    background-color: #333;
-    color:white;
+    background: none;
+    font-size: 24px;
     border:none;
     cursor: pointer;
 }
+.scroll-btn.left {
+    left: 10px;  // Sol tarafta konumlandır
+}
+
+.scroll-btn.right {
+    right: 10px;  // Sağ tarafta konumlandır
+}
+
+/* Medya Sorguları */
+@media (max-width: 600px) {
+    #ads-container {
+        flex-direction: column;  /* Dikey düzen */
+        overflow-x: hidden;  /* Yatay kaydırmayı kapat */
+        overflow-y: auto;  /* Dikey kaydırma aktif et */
+    }
+
+    .ad {
+        width: 100%;  /* Genişlik tam ekran olsun */
+        margin: 5px 0;  /* Üst ve altta boşluk */
+    }
+}
+
+@media (max-width: 800px) {
+    header, footer {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    #content {
+        padding: 10px;
+    }
+}
+
+@media (max-width: 600px) {
+    body {
+        font-size: 14px;  /* Küçük ekranlarda yazı boyutunu azalt */
+    }
+
+    header, footer {
+        padding: 5px;
+    }
+}
+
 
 #navbar{
     background-color: #f8f8f8 ;
@@ -169,13 +268,13 @@ body.theme-dark {
 }
 
 #navbar-right{
-    padding: 5px 15px;
-    margin-left: 10px;
-    background-color: #4caf50;
+    padding : 2px;
+
     color: white;
     border: none;
     cursor: pointer;
 }
+
 
 .popup {
     display: none;
@@ -330,15 +429,9 @@ body.theme-dark {
     color: #777;
 }
 
-
-
-/* sur map */
-/* Style for the popup content */
-
 .mapboxgl-popup {
-    max-width: 250px; /* Popup'ın maksimum genişliği */
+    max-width: 100px; /* Popup'ın maksimum genişliği */
 }
-
 
 .popup-content {
     background-position: center;
@@ -355,6 +448,11 @@ body.theme-dark {
     height: auto;
     display: block; /* Ensures the image does not exceed the width of the popup */
 }
+
+
+/* sur map */
+/* Style for the popup content */
+
 
 .ad{
     border: 1px solid #ccc;

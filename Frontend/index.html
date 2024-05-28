@@ -119,14 +119,15 @@
                                     if (data.features.length > 0) {
                                         const coordinates = data.features[0].center;
                                         const descriptionHTML = `
-                                            <div class="popup-content"  onclick="location.href='ad.html?id=${ad.id}'" style="background-image: url('${ad.photo_url}');">
-                                                <h3>${ad.title}</h3>
-                                                <!-- <img src="${ad.photo_url}" alt="Ad Image">-->
-                                                <p>Product: ${ad.product_name}</p>
-                                                <p>Price: ${ad.product_price}</p>
-                                                <p>Stock: ${ad.product_stock}</p>
-                                                <p>Address: ${address}</p>
-                                                <p>Created on: ${new Date(ad.creation_date).toLocaleDateString()}</p>
+                                            <div class="popup-content" onclick="location.href='ad.html?id=${ad.id}'" style="background-image: url('${ad.photo_url}');">
+                                                <div class="popup-text">
+                                                    <h3>${ad.title}</h3>
+                                                    <p>Product: ${ad.product_name}</p>
+                                                    <p>Price: ${ad.product_price}</p>
+                                                    <p>Stock: ${ad.product_stock}</p>
+                                                    <p>Address: ${address}</p>
+                                                    <p>Created on: ${new Date(ad.creation_date).toLocaleDateString()}</p>
+                                                </div>
                                             </div>
                                         `;
 
@@ -135,12 +136,15 @@
                                             .setPopup(new mapboxgl.Popup({offset: 25}).setHTML(descriptionHTML))
                                             .addTo(map);
                                         markers.push(newMarker);
+
+
                                     }
                                 });
                         });
                     })
                     .catch(error => console.error('Error:', error));
                     showUserAddressOnMap();
+                    getUserLocation();
             });
         </script>
     </div>

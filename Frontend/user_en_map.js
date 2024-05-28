@@ -46,3 +46,25 @@ function showUserAddressOnMap() {
         userMarker.remove(); // Remove the existing marker
     }
 }
+
+function getUserLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
+                console.log('User geolocation:', position);
+                const userCoords = [position.coords.longitude, position.coords.latitude];
+
+                const userLocationMarker = new mapboxgl.Marker({ color: 'purple' }) // Mor marker
+                    .setLngLat(userCoords)
+                    .addTo(map);
+
+                map.flyTo({ center: userCoords, zoom: 9 }); // Haritayı kullanıcı konumuna odakla
+            },
+            function(error) {
+                console.error('Geolocation error:', error);
+            }
+        );
+    } else {
+        console.error("Geolocation is not supported by this browser.");
+    }
+}
