@@ -25,7 +25,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $city = filter_input(INPUT_POST, 'city', FILTER_SANITIZE_STRING);
     $canton = filter_input(INPUT_POST, 'canton', FILTER_SANITIZE_STRING);
     $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_STRING );
+    $confirmPassword = filter_input(INPUT_POST, 'confirm-password', FILTER_SANITIZE_STRING);
 
+    //Check if passwords match
+    if ($password !== $confirmPassword) {
+        echo 'Passwords do not match.';
+        exit;
+    }
+    
     // Valider la saisie
     if (!filter_var($e_mail, FILTER_VALIDATE_EMAIL)) {
         echo 'Invalid email format';
