@@ -70,8 +70,8 @@ function displayAds(ads) {
                     <div class="ad-info">
                         <h3>${ad.title}</h3>
                         <p>${ad.situation}</p>
-                        <p>Stock: ${ad.stock}</p>
-                        <p>price: ${ad.price}</p>
+                        <p>Stock: ${ad.product_stock}</p>
+                        <p>price: ${ad.product_price}</p>
                     </div>
                 </div>
             </a>
@@ -80,7 +80,7 @@ function displayAds(ads) {
         //addMarker(ad);  // Ajouter de nouveaux marqueurs pour chaque nom
     });
 }
-/*
+
 function addMarker(ad) {
     const fullAddress = `${ad.street} ${ad.building_number}, ${ad.postal_code} ${ad.city}, ${ad.canton}`;
     const query = encodeURIComponent(fullAddress);
@@ -110,7 +110,8 @@ function addMarker(ad) {
      }).catch(error => {
      console.error("Error adding marker:", error);
     });
-}*/
+}
+/*
 
  function addMarker(ad, index, totalAdsAtLocation) {
      const OFFSET = 0.0001; // Küçük ofset değeri
@@ -148,7 +149,7 @@ function addMarker(ad) {
          }).catch(error => {
          console.error("Error adding marker:", error);
      });
- }
+ }*/
 
 function scrollAds(direction) {
     const adsContainer = document.getElementById('ads-container');
